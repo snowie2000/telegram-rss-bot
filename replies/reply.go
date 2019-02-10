@@ -1,9 +1,13 @@
 package replies
 
 import (
+	"log"
+	"strconv"
+
+	"github.com/0x111/telegram-rss-bot/markdownhelper"
+
 	"github.com/0x111/telegram-rss-bot/models"
 	"gopkg.in/telegram-bot-api.v4"
-	"strconv"
 )
 
 // This function replies the list of feeds to for the command /list
@@ -15,7 +19,7 @@ func ListOfFeeds(botAPI *tgbotapi.BotAPI, feeds *[]models.Feed, chatid int64, me
 	}
 
 	for _, feed := range *feeds {
-		txt += "[#" + strconv.Itoa(feed.ID) + "] *" + feed.Name + "*: " + feed.Url + "\n"
+		txt += "[#" + strconv.Itoa(feed.ID) + "] *" + markdownhelper.MDEscape(feed.Name) + "*: " + markdownhelper.MDEscape(feed.Url) + "\n"
 	}
 
 	msg := tgbotapi.NewMessage(chatid, txt)

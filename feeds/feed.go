@@ -3,6 +3,8 @@ package feeds
 import (
 	"database/sql"
 	"errors"
+	"time"
+
 	"github.com/0x111/telegram-rss-bot/conf"
 	"github.com/0x111/telegram-rss-bot/db"
 	"github.com/0x111/telegram-rss-bot/models"
@@ -10,7 +12,6 @@ import (
 	"github.com/mmcdole/gofeed"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
-	"time"
 )
 
 // Add a new feed to the database
@@ -144,6 +145,7 @@ func ListFeeds(userid int, chatid int64) (*[]models.Feed, error) {
 		return nil, err
 	}
 
+	log.Println(feed)
 	return &feed, nil
 }
 
