@@ -2,8 +2,8 @@ package commands
 
 import (
 	"fmt"
-	"github.com/0x111/telegram-rss-bot/feeds"
-	"github.com/0x111/telegram-rss-bot/replies"
+	"github.com/snowie2000/telegram-rss-bot/feeds"
+	"github.com/snowie2000/telegram-rss-bot/replies"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 	"strconv"

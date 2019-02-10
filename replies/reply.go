@@ -1,12 +1,11 @@
 package replies
 
 import (
-	"log"
 	"strconv"
 
-	"github.com/0x111/telegram-rss-bot/markdownhelper"
+	"github.com/snowie2000/telegram-rss-bot/markdownhelper"
 
-	"github.com/0x111/telegram-rss-bot/models"
+	"github.com/snowie2000/telegram-rss-bot/models"
 	"gopkg.in/telegram-bot-api.v4"
 )
 

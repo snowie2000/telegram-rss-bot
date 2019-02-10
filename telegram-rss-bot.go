@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/0x111/telegram-rss-bot/chans"
-	"github.com/0x111/telegram-rss-bot/commands"
-	"github.com/0x111/telegram-rss-bot/conf"
-	"github.com/0x111/telegram-rss-bot/db"
-	"github.com/0x111/telegram-rss-bot/migrations"
+	"github.com/snowie2000/telegram-rss-bot/chans"
+	"github.com/snowie2000/telegram-rss-bot/commands"
+	"github.com/snowie2000/telegram-rss-bot/conf"
+	"github.com/snowie2000/telegram-rss-bot/db"
+	"github.com/snowie2000/telegram-rss-bot/migrations"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )

@@ -5,8 +5,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/0x111/telegram-rss-bot/feeds"
-	"github.com/0x111/telegram-rss-bot/markdownhelper"
+	"github.com/snowie2000/telegram-rss-bot/feeds"
+	"github.com/snowie2000/telegram-rss-bot/markdownhelper"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )

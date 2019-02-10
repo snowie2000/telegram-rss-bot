@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"github.com/0x111/telegram-rss-bot/conf"
+	"github.com/snowie2000/telegram-rss-bot/conf"
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
 )

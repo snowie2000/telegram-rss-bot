@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/0x111/telegram-rss-bot/db"
+	"github.com/snowie2000/telegram-rss-bot/db"
 	log "github.com/sirupsen/logrus"
 )
 
