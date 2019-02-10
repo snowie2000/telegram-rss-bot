@@ -2,6 +2,8 @@ package chans
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/0x111/telegram-rss-bot/feeds"
 	"github.com/0x111/telegram-rss-bot/replies"
 	log "github.com/sirupsen/logrus"
@@ -23,20 +25,24 @@ func FeedUpdates() {
 func FeedPosts(Bot *tgbotapi.BotAPI) {
 	feedPosts := feeds.PostFeedUpdatesChan()
 
+	msg := ""
+	var chatid int64 = 0
 	for feedPost := range feedPosts {
-		msg := fmt.Sprintf(`
-	%s - %s
-	`, feedPost.Title, feedPost.Link)
+		title := strings.Replace(strings.Replace(feedPost.Title, "[", "\\[", -1), "]", "\\]", -1)
+		msg += fmt.Sprintf(`
+	[%s](%s)\r\n
+	`, title, feedPost.Link)
+		chatid = feedPost.ChatID
 		log.WithFields(log.Fields{"feedPost": feedPost, "chatID": feedPost.ChatID}).Debug("Posting feed update to the Telegram API")
-		err := replies.SimpleMessage(Bot, feedPost.ChatID, 0, msg)
-		if err == nil {
-			log.WithFields(log.Fields{"feedPost": feedPost, "chatID": feedPost.ChatID}).Debug("Setting the Feed Data entry to published!")
-			_, err := feeds.UpdateFeedDataPublished(&feedPost)
-			if err != nil {
-				log.WithFields(log.Fields{"error": err, "feedPost": feedPost, "chatID": feedPost.ChatID}).Error("There was an error while updating the Feed Data entry!")
-			}
-		} else {
-			log.WithFields(log.Fields{"error": err, "feedPost": feedPost, "chatID": feedPost.ChatID}).Error("There was an error while posting the update to the feed!")
-		}
 	}
+	replies.SimpleMessage(Bot, chatid, 0, msg[:len(msg)-2])
+	/*if err == nil {
+		log.WithFields(log.Fields{"feedPost": feedPost, "chatID": chatid}).Debug("Setting the Feed Data entry to published!")
+		_, err := feeds.UpdateFeedDataPublished(&feedPost)
+		if err != nil {
+			log.WithFields(log.Fields{"error": err, "feedPost": feedPost, "chatID": chatid}).Error("There was an error while updating the Feed Data entry!")
+		}
+	} else {
+		log.WithFields(log.Fields{"error": err, "feedPost": feedPost, "chatID": chatid}).Error("There was an error while posting the update to the feed!")
+	}*/
 }
