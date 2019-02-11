@@ -5,12 +5,12 @@ import (
 	"errors"
 	"time"
 
+	"github.com/mmcdole/gofeed"
+	log "github.com/sirupsen/logrus"
 	"github.com/snowie2000/telegram-rss-bot/conf"
 	"github.com/snowie2000/telegram-rss-bot/db"
 	"github.com/snowie2000/telegram-rss-bot/models"
 	"github.com/snowie2000/telegram-rss-bot/replies"
-	"github.com/mmcdole/gofeed"
-	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
@@ -292,6 +292,19 @@ func PostFeedUpdatesChan() chan models.FeedData {
 	}()
 
 	return ch
+}
+
+func GetFeedName(feedid int, chatid int64) (name string) {
+	DB := db.GetDB()
+	var err error
+	stmt, err := DB.Prepare("SELECT name FROM feeds WHERE id=? AND chatid=? LIMIT 1")
+	defer stmt.Close()
+
+	err = stmt.QueryRow(feedid, chatid).Scan(&name)
+	if err != nil {
+		name = err.Error()
+	}
+	return
 }
 
 // This function requests the RSS Feed, parses and processes the data
