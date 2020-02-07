@@ -1,13 +1,15 @@
 package main
 
 import (
+	"time"
+
+	log "github.com/sirupsen/logrus"
 	"github.com/snowie2000/telegram-rss-bot/chans"
 	"github.com/snowie2000/telegram-rss-bot/commands"
 	"github.com/snowie2000/telegram-rss-bot/conf"
 	"github.com/snowie2000/telegram-rss-bot/db"
 	"github.com/snowie2000/telegram-rss-bot/migrations"
-	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
+	tgbotapi "gopkg.in/telegram-bot-api.v4"
 )
 
 func main() {
@@ -15,15 +17,23 @@ func main() {
 	dbc := db.ConnectDB()
 	defer dbc.Close()
 
-	var err error
+	var (
+		err error
+		Bot *tgbotapi.BotAPI
+	)
 
 	// Read config
 	config := conf.GetConfig()
 
-	Bot, err := tgbotapi.NewBotAPI(config.GetString("telegram_auth_key"))
+	for {
+		Bot, err = tgbotapi.NewBotAPI(config.GetString("telegram_auth_key"))
 
-	if err != nil {
-		log.Panic(err)
+		if err == nil {
+			break
+		} else {
+			log.Println("Error:", err, "retrying in 10s")
+			time.Sleep(10 * time.Second)
+		}
 	}
 
 	Bot.Debug = config.GetBool("telegram_api_debug")
