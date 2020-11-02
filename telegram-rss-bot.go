@@ -56,7 +56,7 @@ func main() {
 		chans.FeedPosts(Bot)
 	}()
 
-	// read feed updates from the Telegram API
+	// read feed updates from the Telegram APIS
 	updates, err := Bot.GetUpdatesChan(u)
 
 	for update := range updates {
