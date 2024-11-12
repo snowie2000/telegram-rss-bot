@@ -1,6 +1,7 @@
 package feeds
 
 import (
+	"net/http"
 	"database/sql"
 	"errors"
 	"time"
@@ -311,6 +312,11 @@ func GetFeedName(feedid int, chatid int64) (name string) {
 func GetFeed(feedUrl string, feedID int) error {
 	config := conf.GetConfig()
 	fp := gofeed.NewParser()
+	fp.Client = &http.Client{
+		Transport: &http.Transport{
+			ForceAttemptHTTP2: false, // Ensure HTTP/2 is not attempted
+		},
+	}
 	feed, err := fp.ParseURL(feedUrl)
 
 	if err != nil {
