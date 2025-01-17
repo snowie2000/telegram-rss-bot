@@ -13,6 +13,7 @@ import (
 	"github.com/snowie2000/telegram-rss-bot/models"
 	"github.com/snowie2000/telegram-rss-bot/replies"
 	"gopkg.in/telegram-bot-api.v4"
+	freq "github.com/imroc/req/v3"
 )
 
 // Add a new feed to the database
@@ -308,17 +309,38 @@ func GetFeedName(feedid int, chatid int64) (name string) {
 	return
 }
 
+func cloudScraper(req *http.Request) (*freq.Response, error) {
+	client := freq.C().ImpersonateFirefox() //.SetCommonContentType("application/x-www-form-urlencoded; charset=UTF-8").SetCommonHeader("accept", "*/*")
+	for k, v := range req.Header {
+		if len(v) > 0 {
+			client.Headers.Set(k, v[0])
+		}
+	}
+	switch req.Method {
+	case http.MethodGet:
+		return client.R().Get(req.URL.String())
+	case http.MethodPost:
+		return client.R().SetBody(req.Body).Post(req.URL.String())
+	default:
+		return nil, errors.New("Method not allowed")
+	}
+}
+
 // This function requests the RSS Feed, parses and processes the data
 func GetFeed(feedUrl string, feedID int) error {
 	config := conf.GetConfig()
 	fp := gofeed.NewParser()
-	fp.Client = &http.Client{
-		Transport: &http.Transport{
-			ForceAttemptHTTP2: false, // Ensure HTTP/2 is not attempted
-		},
+	req, err := http.NewRequest("GET", feedUrl, nil)
+	if err != nil {
+		return err
 	}
-	feed, err := fp.ParseURL(feedUrl)
-
+	resp, err := cloudScraper(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	feed, err := fp.Parse(resp.Body)
+		
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Error("There was an error while parsing the feed!")
 		log.Debug("There was an error while parsing the feed!")
